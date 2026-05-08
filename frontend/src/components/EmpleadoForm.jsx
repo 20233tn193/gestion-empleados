@@ -37,6 +37,24 @@ export default function EmpleadoForm({ empleado, departamentos, onSubmit, onCanc
     if (errors[name]) setErrors({ ...errors, [name]: null });
   };
 
+  const formatearSalario = (valor) => {
+    if (valor === '' || valor === null || valor === undefined) return '';
+    const [entero, decimal] = String(valor).split('.');
+    const enteroNum = Number(entero || 0);
+    const enteroFormat = enteroNum.toLocaleString('es-MX');
+    return decimal !== undefined ? `$${enteroFormat}.${decimal}` : `$${enteroFormat}`;
+  };
+
+  const handleSalarioChange = (e) => {
+    let raw = e.target.value.replace(/[^\d.]/g, '');
+    const partes = raw.split('.');
+    if (partes.length > 2) raw = partes[0] + '.' + partes.slice(1).join('');
+    if (partes.length === 2 && partes[1].length > 2)
+      raw = partes[0] + '.' + partes[1].substring(0, 2);
+    setFormData({ ...formData, salario: raw });
+    if (errors.salario) setErrors({ ...errors, salario: null });
+  };
+
   const validar = () => {
     const errs = {};
     if (!formData.nombre.trim() || formData.nombre.trim().length < 2)
@@ -116,13 +134,12 @@ export default function EmpleadoForm({ empleado, departamentos, onSubmit, onCanc
           <div className="form-group">
             <label>Salario (MXN) *</label>
             <input
-              type="number"
+              type="text"
               name="salario"
-              step="0.01"
-              min="0"
-              value={formData.salario}
-              onChange={handleChange}
-              placeholder="0.00"
+              inputMode="decimal"
+              value={formatearSalario(formData.salario)}
+              onChange={handleSalarioChange}
+              placeholder="$0"
             />
             {errors.salario && <span className="error">{errors.salario}</span>}
           </div>

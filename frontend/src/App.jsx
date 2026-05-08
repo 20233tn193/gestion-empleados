@@ -127,7 +127,6 @@ export default function App() {
     <div className="app-container">
       <header className="app-header">
         <h1>Sistema de Gestión de Empleados</h1>
-        <p>CRUD completo con React + Vite, Django REST Framework y MySQL</p>
       </header>
 
       <div className="main-card">
